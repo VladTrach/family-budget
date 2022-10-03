@@ -12,7 +12,7 @@ def test_happy_list_user_budgets(budget, api_client):
     assert response.data[0]["id"] == budget.id
 
 
-def test_list_user_budgets_not_authorized(budget, api_client):
+def test_list_user_budgets_forbidden(budget, api_client):
     url = reverse("api_v1:budgets-list")
     response = api_client.get(url)
     assert response.status_code == status.HTTP_403_FORBIDDEN
@@ -51,3 +51,27 @@ def test_happy_edit_budget(budget, api_client):
     assert response.status_code == status.HTTP_200_OK
     budget.refresh_from_db()
     assert new_budget_name == budget.name
+
+
+def test_update_budget_by_contributor_forbidden(
+    budget_with_contributor,
+    api_client,
+):
+    url = reverse("api_v1:budgets-detail", args=[budget_with_contributor.id])
+    contributor = budget_with_contributor.contributors.first()
+    api_client.force_login(contributor)
+    response = api_client.patch(
+        url, {"name": "you can't change name"}, format="json",
+    )
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+
+
+def test_delete_budget_by_contributor_forbidden(
+    budget_with_contributor,
+    api_client,
+):
+    url = reverse("api_v1:budgets-detail", args=[budget_with_contributor.id])
+    contributor = budget_with_contributor.contributors.first()
+    api_client.force_login(contributor)
+    response = api_client.delete(url)
+    assert response.status_code == status.HTTP_403_FORBIDDEN
