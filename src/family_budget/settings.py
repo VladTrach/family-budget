@@ -41,6 +41,7 @@ DJANGO_APPS = [
 ]
 PROJECT_APPS = [
     "users",
+    "budgets",
 ]
 INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS
 
