@@ -112,3 +112,17 @@ def test_pagination_user_budgets(budget, api_client):
 
     next_page_response = api_client.get(response.data["next"])
     assert len(next_page_response.data["results"]) == 1
+
+
+def test_create_budget(user, api_client):
+    url = reverse("api_v1:budgets-list")
+    data = {
+        "name": "Budget created by API",
+    }
+
+    api_client.force_login(user)
+    response = api_client.post(url, data, format="json")
+    assert response.status_code == status.HTTP_201_CREATED
+    fetched_budget = Budget.objects.get(name=data["name"])
+    assert response.data["id"] == fetched_budget.id
+    assert response.data["owner_id"] == user.id
