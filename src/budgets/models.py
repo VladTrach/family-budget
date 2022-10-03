@@ -1,7 +1,10 @@
+from decimal import Decimal
 from typing import List
 
 from django.db import models
+from django.db.models import Sum
 from django.utils import timezone
+from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 
 from family_budget import settings
@@ -28,6 +31,18 @@ class Budget(models.Model):
 
     def add_contributors(self, contributors: List):
         self.contributors.add(*contributors)
+
+    @cached_property
+    def amount(self):
+        income_sum = self.transactions.filter(
+            type=Transaction.TYPE_INCOME
+        ).aggregate(Sum("amount"))
+        income_sum = income_sum.get("amount__sum") or Decimal("0")
+        expenses_sum = self.transactions.filter(
+            type=Transaction.TYPE_EXPENSE
+        ).aggregate(Sum("amount"))
+        expenses_sum = expenses_sum.get("amount__sum") or Decimal("0")
+        return income_sum - expenses_sum
 
 
 class Transaction(models.Model):

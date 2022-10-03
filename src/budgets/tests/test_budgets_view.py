@@ -33,6 +33,7 @@ def test_happy_retrieve_budget(budget, api_client):
     response = api_client.get(url)
     assert response.status_code == status.HTTP_200_OK
     assert response.data["id"] == budget.id
+    assert "amount" in response.data
 
 
 def test_happy_destroy_budget(budget, api_client):

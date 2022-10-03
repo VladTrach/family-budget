@@ -7,7 +7,8 @@ from users.models import User
 class BudgetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Budget
-        fields = ["id", "name", "owner_id"]
+        fields = ["id", "name", "owner_id", "amount"]
+        read_only_fields = ["amount"]
 
 
 class DetailBudgetSerializer(serializers.ModelSerializer):
@@ -17,7 +18,8 @@ class DetailBudgetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Budget
-        fields = ["id", "name", "owner_id", "contributors"]
+        fields = ["id", "name", "owner_id", "amount", "contributors"]
+        read_only_fields = ["amount"]
 
 
 class TransactionSerializer(serializers.ModelSerializer):
