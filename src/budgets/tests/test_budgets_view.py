@@ -126,3 +126,12 @@ def test_create_budget(user, api_client):
     fetched_budget = Budget.objects.get(name=data["name"])
     assert response.data["id"] == fetched_budget.id
     assert response.data["owner_id"] == user.id
+
+
+def test_manage_budget_contributors(budget, user2, api_client):
+    url = reverse("api_v1:budgets-detail", args=[budget.id])
+    data = {"contributors": [user2.id]}
+    api_client.force_login(budget.owner)
+    response = api_client.patch(url, data, format="json")
+    assert response.status_code == status.HTTP_200_OK
+    assert budget.contributors.filter(id=user2.id).exists()
