@@ -2,6 +2,7 @@ from django.db.models import Q
 from rest_framework import viewsets, mixins
 
 from budgets.models import Budget
+from budgets.permissions import BudgetOwnerOrReadOnlyPermission
 from budgets.serializers import BudgetSerializer
 
 
@@ -18,6 +19,7 @@ class BudgetViewSet(
 ):
     queryset = Budget.objects.all()
     serializer_class = BudgetSerializer
+    permission_classes = [BudgetOwnerOrReadOnlyPermission]
 
     def get_queryset(self):
         queryset = super().get_queryset()
