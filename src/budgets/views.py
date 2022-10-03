@@ -20,6 +20,7 @@ class BudgetViewSet(
     queryset = Budget.objects.all()
     serializer_class = BudgetSerializer
     permission_classes = [BudgetOwnerOrReadOnlyPermission]
+    filterset_fields = ["name", "owner_id", "created_at"]
 
     def get_queryset(self):
         queryset = super().get_queryset()
