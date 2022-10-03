@@ -77,3 +77,21 @@ def test_delete_budget_by_contributor_forbidden(
     api_client.force_login(contributor)
     response = api_client.delete(url)
     assert response.status_code == status.HTTP_403_FORBIDDEN
+
+
+def test_happy_filter_budgets_by_name(budget, api_client):
+    url = reverse("api_v1:budgets-list")
+    api_client.force_login(budget.owner)
+    Budget.objects.create(
+        owner=budget.owner,
+        name="The second budget",
+    )
+
+    # test without filtering first
+    response = api_client.get(url)
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response.data) == 2
+
+    response = api_client.get(url, {"name": budget.name})
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response.data) == 1
