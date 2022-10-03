@@ -61,7 +61,9 @@ def test_update_budget_by_contributor_forbidden(
     contributor = budget_with_contributor.contributors.first()
     api_client.force_login(contributor)
     response = api_client.patch(
-        url, {"name": "you can't change name"}, format="json",
+        url,
+        {"name": "you can't change name"},
+        format="json",
     )
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
