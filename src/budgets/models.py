@@ -1,4 +1,7 @@
+from typing import List
+
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from family_budget import settings
@@ -23,6 +26,9 @@ class Budget(models.Model):
 
     groups = models.ManyToManyField(Group, related_name="budgets")
 
+    def add_contributors(self, contributors: List):
+        self.contributors.add(*contributors)
+
 
 class Transaction(models.Model):
     TYPE_INCOME = "income"
@@ -43,10 +49,12 @@ class Transaction(models.Model):
         default=TYPE_EXPENSE,
     )
     amount = models.DecimalField(max_digits=8, decimal_places=2)
+    title = models.CharField(max_length=255)
     added_by_user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
         blank=True,
         null=True,
     )
+    made_at = models.DateTimeField(default=timezone.now)
     created_at = models.DateTimeField(auto_now_add=True)

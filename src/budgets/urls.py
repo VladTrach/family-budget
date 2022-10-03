@@ -9,6 +9,11 @@ router.register(
     views.BudgetViewSet,
     basename="budgets",
 )
+router.register(
+    "transactions",
+    views.TransactionViewSet,
+    basename="transactions",
+)
 
 urlpatterns = [
     path("", include(router.urls)),
