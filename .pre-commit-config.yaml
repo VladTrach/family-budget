@@ -1,0 +1,28 @@
+repos:
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v0.800
+    hooks:
+      - id: mypy
+        args: [--no-strict-optional, --ignore-missing-imports]
+        files: "src/"
+        exclude: ^.*\b(migrations)\b.*$
+  - repo: local
+    hooks:
+      - id: black
+        name: black
+        entry: black
+        language: system
+        types: [ python ]
+        args: # arguments to configure black
+          - --line-length=79
+        files: "src/"
+        exclude: ^.*\b(migrations)\b.*$
+      - id: flake8
+        name: flake8
+        entry: flake8
+        language: system
+        types: [ python ]
+        args: # arguments to configure flake8
+          - "--max-line-length=79"
+        files: "src/"
+        exclude: ^.*\b(migrations)\b.*$

@@ -24,7 +24,5 @@ class BudgetViewSet(
     def get_queryset(self):
         queryset = super().get_queryset()
         user = self.request.user
-        queryset = queryset.filter(
-            Q(owner=user) | Q(contributors__id=user.id)
-        )
+        queryset = queryset.filter(Q(owner=user) | Q(contributors__id=user.id))
         return queryset

@@ -15,3 +15,21 @@ Family budget Django application
 The project uses `pytest` framework for testing.
 
 - Run tests `docker-compose run --rm django python -m pytest`
+
+
+## Local development
+
+#### Install and use code quality tools with `pre-commit` (black, mypy, flake8)
+`pre-commit` library is a multi-language package manager for pre-commit hooks.
+You specify a list of hooks you want and pre-commit manages
+the installation and execution of any hook written in any language
+before every commit.
+
+Installation:
+
+    pip install pre-commit
+    pre-commit install
+
+Run for all files existed in the project:
+
+    pre-commit run --all-files
