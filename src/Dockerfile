@@ -2,11 +2,13 @@ FROM python:3.10.7-slim
 
 # Add a new user "john" with user id 8877
 RUN useradd -m -u 8877 app
-# Change to non-root privilege
-USER app
 
 # Set work directory
 WORKDIR /code
+RUN chown app /code
+
+# Change to non-root privilege
+USER app
 
 # Copy project
 COPY . /code/
