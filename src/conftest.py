@@ -54,3 +54,14 @@ def transaction(db, budget):
         title="Test transaction",
         added_by_user=budget.owner,
     )
+
+
+@pytest.fixture
+def transaction_expense(db, budget):
+    return Transaction.objects.create(
+        budget=budget,
+        type=Transaction.TYPE_EXPENSE,
+        amount=17.00,
+        title="Test expense transaction",
+        added_by_user=budget.owner,
+    )
