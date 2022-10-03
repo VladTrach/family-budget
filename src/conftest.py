@@ -1,7 +1,7 @@
 import pytest
 from rest_framework.test import APIClient
 
-from budgets.models import Budget
+from budgets.models import Budget, Transaction
 from users.models import User
 
 
@@ -21,6 +21,15 @@ def user(db):
 
 
 @pytest.fixture
+def user2(db):
+    return User.objects.create_user(
+        username="test_user2",
+        password="password",
+        email="test_user2@family.budget",
+    )
+
+
+@pytest.fixture
 def budget(db, user):
     return Budget.objects.create(name="Test budget", owner=user)
 
@@ -34,3 +43,14 @@ def budget_with_contributor(db, budget):
     )
     budget.contributors.add(contributor)
     return budget
+
+
+@pytest.fixture
+def transaction(db, budget):
+    return Transaction.objects.create(
+        budget=budget,
+        type=Transaction.TYPE_INCOME,
+        amount=10.00,
+        title="Test transaction",
+        added_by_user=budget.owner,
+    )

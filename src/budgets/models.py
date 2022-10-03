@@ -1,3 +1,5 @@
+from typing import List
+
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -23,6 +25,9 @@ class Budget(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     groups = models.ManyToManyField(Group, related_name="budgets")
+
+    def add_contributors(self, contributors: List):
+        self.contributors.add(*contributors)
 
 
 class Transaction(models.Model):
