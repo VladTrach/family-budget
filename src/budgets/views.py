@@ -1,3 +1,14 @@
-from django.shortcuts import render
+from rest_framework import viewsets, mixins
 
-# Create your views here.
+from budgets.models import Budget
+from budgets.serializers import BudgetSerializer
+
+
+class BudgetViewSet(
+    mixins.RetrieveModelMixin,
+    mixins.CreateModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet,
+):
+    queryset = Budget.objects.all()
+    serializer_class = BudgetSerializer
