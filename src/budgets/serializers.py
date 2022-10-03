@@ -14,7 +14,7 @@ class TransactionSerializer(serializers.ModelSerializer):
         model = Transaction
         fields = [
             "id",
-            "budget_id",
+            "budget",
             "type",
             "amount",
             "title",

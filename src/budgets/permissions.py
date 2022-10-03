@@ -31,3 +31,18 @@ class TransactionAccessOrReadOnlyPermission(permissions.BasePermission):
         if obj.added_by_user == user:
             return True
         return obj.budget.owner == user
+
+
+class CreateTransactionPermission(permissions.BasePermission):
+    message = (
+        "Allow to create a transaction for a budget owner or contributor."
+    )
+
+    def has_permission(self, request, view):
+        user = request.user
+        if not (user and user.is_authenticated):
+            return False
+        serializer = view.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        budget = serializer.validated_data["budget"]
+        return budget.owner == user or budget.contributors.filter(id=user.id)

@@ -5,10 +5,12 @@ from budgets.models import Budget, Transaction
 from budgets.permissions import (
     BudgetOwnerOrReadOnlyPermission,
     TransactionAccessOrReadOnlyPermission,
+    CreateTransactionPermission,
 )
 from budgets.serializers import BudgetSerializer, TransactionSerializer
 
 ACTION_LIST = "list"
+ACTION_CREATE = "create"
 
 
 class BudgetViewSet(
@@ -53,3 +55,11 @@ class TransactionViewSet(
             Q(budget__owner=user) | Q(budget__contributors__id=user.id)
         ).order_by("made_at")
         return queryset
+
+    def get_permissions(self):
+        if self.action == ACTION_CREATE:
+            return [CreateTransactionPermission()]
+        return super().get_permissions()
+
+    def perform_create(self, serializer):
+        serializer.save(added_by_user=self.request.user)
