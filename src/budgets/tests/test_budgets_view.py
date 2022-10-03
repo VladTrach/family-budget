@@ -9,7 +9,7 @@ def test_happy_list_user_budgets(budget, api_client):
     api_client.force_login(budget.owner)
     response = api_client.get(url)
     assert response.status_code == status.HTTP_200_OK
-    assert response.data[0]["id"] == budget.id
+    assert response.data["results"][0]["id"] == budget.id
 
 
 def test_list_user_budgets_forbidden(budget, api_client):
@@ -24,7 +24,7 @@ def test_happy_list_contributed_budgets(budget_with_contributor, api_client):
     api_client.force_login(contributor)
     response = api_client.get(url)
     assert response.status_code == status.HTTP_200_OK
-    assert response.data[0]["id"] == budget_with_contributor.id
+    assert response.data["results"][0]["id"] == budget_with_contributor.id
 
 
 def test_happy_retrieve_budget(budget, api_client):
@@ -90,8 +90,25 @@ def test_happy_filter_budgets_by_name(budget, api_client):
     # test without filtering first
     response = api_client.get(url)
     assert response.status_code == status.HTTP_200_OK
-    assert len(response.data) == 2
+    assert response.data["count"] == 2
 
     response = api_client.get(url, {"name": budget.name})
     assert response.status_code == status.HTTP_200_OK
-    assert len(response.data) == 1
+    assert response.data["count"] == 1
+
+
+def test_pagination_user_budgets(budget, api_client):
+    url = reverse("api_v1:budgets-list")
+    Budget.objects.create(
+        owner=budget.owner,
+        name="The second budget",
+    )
+    api_client.force_login(budget.owner)
+    response = api_client.get(url, {"offset": 0, "limit": 1})
+
+    assert response.status_code == status.HTTP_200_OK
+    assert response.data["count"] == 2
+    assert len(response.data["results"]) == 1
+
+    next_page_response = api_client.get(response.data["next"])
+    assert len(next_page_response.data["results"]) == 1
