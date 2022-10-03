@@ -9,6 +9,7 @@ class Group(models.Model):
 
 
 class Budget(models.Model):
+    name = models.CharField(max_length=255)
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
