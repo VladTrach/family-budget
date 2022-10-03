@@ -10,3 +10,8 @@ Family budget Django application
 - Run `docker volume create --name=family-budget-db-data`
 - Run `docker-compose run --rm django ./manage.py migrate`
 - Run `docker-compose run --rm django ./manage.py createsuperuser` to create a super user to be able to create and manage the users from the django admin panel
+
+## Tests
+The project uses `pytest` framework for testing.
+
+- Run tests `docker-compose run --rm django python -m pytest`
