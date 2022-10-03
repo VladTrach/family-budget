@@ -7,7 +7,11 @@ from budgets.permissions import (
     TransactionAccessOrReadOnlyPermission,
     CreateTransactionPermission,
 )
-from budgets.serializers import BudgetSerializer, TransactionSerializer
+from budgets.serializers import (
+    BudgetSerializer,
+    TransactionSerializer,
+    DetailBudgetSerializer,
+)
 
 ACTION_LIST = "list"
 ACTION_CREATE = "create"
@@ -31,6 +35,11 @@ class BudgetViewSet(
         user = self.request.user
         queryset = queryset.filter(Q(owner=user) | Q(contributors__id=user.id))
         return queryset
+
+    def get_serializer_class(self):
+        if self.detail:
+            return DetailBudgetSerializer
+        return super().get_serializer_class()
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
